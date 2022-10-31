@@ -92,10 +92,10 @@ function BottomTabNavigator() {
           ),
         })}
       />
-      {data?.map((d, n) => (
-        <BottomTab.Screen name={`User-${n}`} component={TabXScreen} params={{ id: d.id }} options={(navigation) => ({
+      {data?.map?.((d, n) => (
+        <BottomTab.Screen name={`User-${n}`} component={TabXScreen} initialParams={{ user: d }} options={(navigation) => ({
           title: d.first_name,
-          tabBarIcon: () => <Text>{n}</Text>
+          tabBarIcon: ({ color }) => <Text style={{ color }}>{n}</Text>
         })} />
       ))}
     </BottomTab.Navigator>

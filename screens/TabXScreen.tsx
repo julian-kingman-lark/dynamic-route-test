@@ -4,11 +4,11 @@ import { Text, View } from 'react-native';
 const TabXScreen = ({ route, navigation }) => {
     console.log({ route, navigation });
 
-    const { id } = route?.params ?? {};
-    console.log(id);
+    const { user } = route?.params ?? {};
+    console.log(route.params);
 
-    return <View>
-        <Text>{id}</Text>
+    return <View style={{ flex: 1, backgroundColor: 'black' }}>
+        <Text style={{ color: "white" }}>{JSON.stringify(user)}</Text>
     </View>
 }
 
