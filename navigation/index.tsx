@@ -8,7 +8,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
-import { ColorSchemeName, Pressable } from 'react-native';
+import { ColorSchemeName, Pressable, Text } from 'react-native';
 
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
@@ -16,6 +16,7 @@ import ModalScreen from '../screens/ModalScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import TabOneScreen from '../screens/TabOneScreen';
 import TabTwoScreen from '../screens/TabTwoScreen';
+import TabXScreen from '../screens/TabXScreen';
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 
@@ -38,11 +39,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 function RootNavigator() {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
-      <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
-      <Stack.Group screenOptions={{ presentation: 'modal' }}>
-        <Stack.Screen name="Modal" component={ModalScreen} />
-      </Stack.Group>
+      <Stack.Screen name='Root' component={BottomTabNavigator} />
     </Stack.Navigator>
   );
 }
@@ -54,6 +51,17 @@ function RootNavigator() {
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
 function BottomTabNavigator() {
+  const randomNumber = Math.floor(Math.random() * 10);
+  console.log({ randomNumber });
+
+  const [data, setData] = React.useState([]);
+  React.useEffect(() => {
+    console.log('initial load');
+    fetch(`https://random-data-api.com/api/v2/users?size=${randomNumber}&is_xml=true`)
+      .then(res => res.json())
+      .then(setData);
+  }, [])
+  console.log({ data });
   const colorScheme = useColorScheme();
 
   return (
@@ -84,14 +92,12 @@ function BottomTabNavigator() {
           ),
         })}
       />
-      <BottomTab.Screen
-        name="TabTwo"
-        component={TabTwoScreen}
-        options={{
-          title: 'Tab Two',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-        }}
-      />
+      {data?.map((d, n) => (
+        <BottomTab.Screen name={`User-${n}`} component={TabXScreen} params={{ id: d.id }} options={(navigation) => ({
+          title: d.first_name,
+          tabBarIcon: () => <Text>{n}</Text>
+        })} />
+      ))}
     </BottomTab.Navigator>
   );
 }
